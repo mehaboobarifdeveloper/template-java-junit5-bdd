@@ -33,9 +33,9 @@ pipeline {
                         archiveArtifacts 'target/*.jar'
                         allure includeProperties: false, jdk: '', results: [[path: 'allure-results']]
 
-                        sh "mv ./target/surefire-reports/TEST-bdd.RunCucumberTest.xml ./target/surefire-reports/surefire_${BRANCH_NAME}_${BRANCH_NUMBER}.json"
+                        sh "mv ./target/surefire-reports/TEST-bdd.RunCucumberTest.xml ./target/surefire-reports/surefire_${env.BRANCH_NAME}_${env.BRANCH_NUMBER}.json"
                         withCredentials([string(credentialsId: 'JGFROG', variable: 'JGFROG')]) {
-                             sh "curl -k ${JGFROG} -T ./target/surefire-reports/surefire_${BRANCH_NAME}_${BRANCH_NUMBER}.json ${JFROG}"
+                             sh "curl -k ${JGFROG} -T ./target/surefire-reports/surefire_${env.BRANCH_NAME}_${env.BRANCH_NUMBER}.json ${env.JFROG}"
                        }
                     }
                 }
