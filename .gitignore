@@ -6,3 +6,4 @@
 target
 allure-report
 allure-results
+/logs/app.log
