@@ -2,7 +2,7 @@ pipeline {
         agent any
 
         environment{
-            JFROG = "https://learningd2g.jfrog.io/artifactory/f1-ph/Jenkins_Builds/${BRANCH_NAME}_Build_${BRANCH_NUMBER}/"
+            JFROG = "https://learningd2g.jfrog.io/artifactory/f1-ph/Jenkins_Builds/${env.BRANCH_NAME}_Build_${env.BRANCH_NUMBER}/"
         }
 
         tools {
@@ -29,6 +29,7 @@ pipeline {
                     // failed, record the test results and archive the jar file.
                     always
                     {
+                        sh "echo Branch Name is : ${env.BRANCH_NAME}"
                         junit '**/target/surefire-reports/TEST-*.xml'
                         archiveArtifacts 'target/*.jar'
                         allure includeProperties: false, jdk: '', results: [[path: 'allure-results']]
