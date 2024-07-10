@@ -2,7 +2,7 @@ pipeline {
         agent any
 
         environment{
-            JFROG = "https://learningd2g.jfrog.io/artifactory/f1-ph/Jenkins_Builds/${env.BRANCH_NAME}_Build_${env.BRANCH_NUMBER}/"
+            JFROG = "https://learningd2g.jfrog.io/artifactory/f1-ph/Jenkins_Builds/${env.BRANCH_NAME}_Build_${env.BUILD_NUMBER}/"
         }
 
         tools {
@@ -30,13 +30,15 @@ pipeline {
                     always
                     {
                         sh "echo Branch Name is : ${env.BRANCH_NAME}"
+                        sh "echo Branch Name is : ${en.BUILD_NUMBER}"
+
                         junit '**/target/surefire-reports/TEST-*.xml'
                         archiveArtifacts 'target/*.jar'
                         allure includeProperties: false, jdk: '', results: [[path: 'allure-results']]
 
-                        sh "mv ./target/surefire-reports/TEST-bdd.RunCucumberTest.xml ./target/surefire-reports/surefire_${env.BRANCH_NAME}_${env.BRANCH_NUMBER}.json"
+                        sh "mv ./target/surefire-reports/TEST-bdd.RunCucumberTest.xml ./target/surefire-reports/surefire_${env.BRANCH_NAME}_${env.BUILD_NUMBER}.json"
                         withCredentials([string(credentialsId: 'JGFROG', variable: 'JGFROG')]) {
-                             sh "curl -k ${JGFROG} -T ./target/surefire-reports/surefire_${env.BRANCH_NAME}_${env.BRANCH_NUMBER}.json ${env.JFROG}"
+                             sh "curl -k ${JGFROG} -T ./target/surefire-reports/surefire_${env.BRANCH_NAME}_${env.BUILD_NUMBER}.json ${env.JFROG}"
                        }
                     }
                 }
