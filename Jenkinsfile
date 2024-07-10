@@ -10,10 +10,11 @@ pipeline {
             maven "M3"
         }
 
+        properties([parameters([booleanParam(defaultValue: true, name: 'Do you want log files?')])])
+
         stages {
             stage('Build')
             {
-                properties([parameters([booleanParam(defaultValue: true, name: 'Do you want log files?')])])
                 steps {
                 // Get some code from a GitHub repository
                     git branch: 'failurecheck', url: 'https://github.com/mehaboobarifdeveloper/template-java-junit5-bdd.git'
