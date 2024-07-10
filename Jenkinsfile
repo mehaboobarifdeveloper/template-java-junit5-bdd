@@ -30,15 +30,17 @@ pipeline {
                     always
                     {
                         sh "echo Branch Name is : ${env.BRANCH_NAME}"
-                        sh "echo Branch Name is : ${env.BUILD_NUMBER}"
+                        sh "echo Build Number is : ${env.BUILD_NUMBER}"
 
                         junit '**/target/surefire-reports/TEST-*.xml'
                         archiveArtifacts 'target/*.jar'
                         allure includeProperties: false, jdk: '', results: [[path: 'allure-results']]
 
                         sh "mv ./target/surefire-reports/TEST-bdd.RunCucumberTest.xml ./target/surefire-reports/surefire_${env.BRANCH_NAME}_${env.BUILD_NUMBER}.json"
+                        sh "mv ./logs/app.log ./logs/app_${env.BRANCH_NAME}_${env.BUILD_NUMBER}.log"
                         withCredentials([string(credentialsId: 'JGFROG', variable: 'JGFROG')]) {
                              sh "curl -k ${JGFROG} -T ./target/surefire-reports/surefire_${env.BRANCH_NAME}_${env.BUILD_NUMBER}.json ${env.JFROG}"
+                             sh "curl -k ${JGFROG} -T ./logs/app_${env.BRANCH_NAME}_${env.BUILD_NUMBER}.log ${env.JFROG}"
                        }
                     }
                 }
