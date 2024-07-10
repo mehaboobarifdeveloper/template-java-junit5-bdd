@@ -30,7 +30,7 @@ pipeline {
                     always
                     {
                         sh "echo Branch Name is : ${env.BRANCH_NAME}"
-                        sh "echo Branch Name is : ${en.BUILD_NUMBER}"
+                        sh "echo Branch Name is : ${env.BUILD_NUMBER}"
 
                         junit '**/target/surefire-reports/TEST-*.xml'
                         archiveArtifacts 'target/*.jar'
