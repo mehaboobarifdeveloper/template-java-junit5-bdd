@@ -10,7 +10,7 @@ pipeline {
             maven "M3"
         }
 
-        properties([parameters([booleanParam(defaultValue: true, name: 'Do you want log files?')])])
+        properties([parameters([booleanParam(defaultValue: true, name: 'LOGFILES_PUSH')])])
 
         stages {
             stage('Build')
@@ -41,8 +41,9 @@ pipeline {
                         sh "mv ./target/surefire-reports/TEST-bdd.RunCucumberTest.xml ./target/surefire-reports/surefire_${env.BRANCH_NAME}_${env.BUILD_NUMBER}.json"
                         sh "mv ./logs/app.log ./logs/app_${env.BRANCH_NAME}_${env.BUILD_NUMBER}.log"
                         withCredentials([string(credentialsId: 'JGFROG', variable: 'JGFROG')]) {
-                             sh "curl -k ${JGFROG} -T ./target/surefire-reports/surefire_${env.BRANCH_NAME}_${env.BUILD_NUMBER}.json ${env.JFROG}"
-                             sh "curl -k ${JGFROG} -T ./logs/app_${env.BRANCH_NAME}_${env.BUILD_NUMBER}.log ${env.JFROG}"
+                        sh "curl -k ${JGFROG} -T ./target/surefire-reports/surefire_${env.BRANCH_NAME}_${env.BUILD_NUMBER}.json ${env.JFROG}"
+                        if(params.LOGFILES_PUSH)
+                            sh "curl -k ${JGFROG} -T ./logs/app_${env.BRANCH_NAME}_${env.BUILD_NUMBER}.log ${env.JFROG}"
                        }
                     }
                 }
